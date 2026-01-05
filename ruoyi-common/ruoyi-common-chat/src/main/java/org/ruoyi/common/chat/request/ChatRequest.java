@@ -94,4 +94,9 @@ public class ChatRequest {
      */
     private String token;
 
+    /**
+     * 用户输入消息的token数（用于计费时计算输入token）
+     */
+    private Integer inputTokens;
+
 }

@@ -59,8 +59,20 @@ public class ChatCostServiceImpl implements IChatCostService {
             return;
         }
 
-        int tokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
-        log.debug("deductToken->本次提交token数: {}", tokens);
+        // 计算输出token（AI回复的token）
+        int outputTokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
+        
+        // 获取输入token（用户消息的token），如果未设置则默认为0
+        int inputTokens = (chatRequest.getInputTokens() != null) ? chatRequest.getInputTokens() : 0;
+        
+        // 将输入token除以4后与输出token相加（输入价格是输出的1/4）
+        // 使用BigDecimal确保精度
+        BigDecimal inputTokensDecimal = BigDecimal.valueOf(inputTokens)
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP);
+        int tokens = inputTokensDecimal.intValue() + outputTokens;
+        
+        log.debug("deductToken->输入token: {}, 输出token: {}, 计算后总token数: {}", 
+                inputTokens, outputTokens, tokens);
 
         String modelName = chatRequest.getModel();
         ChatModelVo chatModelVo = chatModelService.selectModelByName(modelName);
@@ -214,7 +226,17 @@ public class ChatCostServiceImpl implements IChatCostService {
             return;
         }
 
-        int tokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
+        // 计算输出token（AI回复的token）
+        int outputTokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
+        
+        // 获取输入token（用户消息的token），如果未设置则默认为0
+        int inputTokens = (chatRequest.getInputTokens() != null) ? chatRequest.getInputTokens() : 0;
+        
+        // 将输入token除以4后与输出token相加（输入价格是输出的1/4）
+        BigDecimal inputTokensDecimal = BigDecimal.valueOf(inputTokens)
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP);
+        int tokens = inputTokensDecimal.intValue() + outputTokens;
+        
         String modelName = chatRequest.getModel();
         ChatModelVo chatModelVo = chatModelService.selectModelByName(modelName);
         BigDecimal unitPrice = BigDecimal.valueOf(chatModelVo.getModelPrice());
@@ -301,11 +323,13 @@ public class ChatCostServiceImpl implements IChatCostService {
         }
 
         try {
-            // 计算本次消息的实际token数
-            int actualTokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
-
-            // 构建计费信息
-            String billingInfo = buildBillingInfo(billingTypeCode, billedTokens, cost);
+            // 计算本次消息的实际token数（输出token）
+            int outputTokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
+            int inputTokens = (chatRequest.getInputTokens() != null) ? chatRequest.getInputTokens() : 0;
+            int actualTokens = outputTokens; // 实际token数记录输出token
+            
+            // 构建计费信息（包含输入输出token信息）
+            String billingInfo = buildBillingInfo(billingTypeCode, billedTokens, cost, inputTokens, outputTokens);
 
             // 创建更新对象
             ChatMessageBo updateMessage = new ChatMessageBo();
@@ -329,17 +353,42 @@ public class ChatCostServiceImpl implements IChatCostService {
      * 构建计费信息字符串
      */
     private String buildBillingInfo(String billingTypeCode, int billedTokens, double cost) {
+        return buildBillingInfo(billingTypeCode, billedTokens, cost, 0, 0);
+    }
+
+    /**
+     * 构建计费信息字符串（包含输入输出token信息）
+     */
+    private String buildBillingInfo(String billingTypeCode, int billedTokens, double cost, int inputTokens, int outputTokens) {
         // 使用枚举获取计费类型并构建计费信息
         BillingType billingType = BillingType.fromCode(billingTypeCode);
         if (billingType != null) {
-            return switch (billingType) {
-                case TIMES ->
-                        String.format("%s：消耗 %d tokens，扣费 %.2f 元", billingType.getDescription(), billedTokens, cost);
-                case TOKEN ->
-                        String.format("%s：结算 %d tokens，扣费 %.2f 元", billingType.getDescription(), billedTokens, cost);
-            };
+            if (inputTokens > 0 || outputTokens > 0) {
+                // 显示输入输出token详情
+                return switch (billingType) {
+                    case TIMES ->
+                            String.format("%s：输入 %d tokens，输出 %d tokens（等效 %d tokens），扣费 %.2f 元", 
+                                    billingType.getDescription(), inputTokens, outputTokens, billedTokens, cost);
+                    case TOKEN ->
+                            String.format("%s：输入 %d tokens，输出 %d tokens（等效 %d tokens），扣费 %.2f 元", 
+                                    billingType.getDescription(), inputTokens, outputTokens, billedTokens, cost);
+                };
+            } else {
+                // 兼容旧格式
+                return switch (billingType) {
+                    case TIMES ->
+                            String.format("%s：消耗 %d tokens，扣费 %.2f 元", billingType.getDescription(), billedTokens, cost);
+                    case TOKEN ->
+                            String.format("%s：结算 %d tokens，扣费 %.2f 元", billingType.getDescription(), billedTokens, cost);
+                };
+            }
         } else {
-            return String.format("系统计费：处理 %d tokens，扣费 %.2f 元", billedTokens, cost);
+            if (inputTokens > 0 || outputTokens > 0) {
+                return String.format("系统计费：输入 %d tokens，输出 %d tokens（等效 %d tokens），扣费 %.2f 元", 
+                        inputTokens, outputTokens, billedTokens, cost);
+            } else {
+                return String.format("系统计费：处理 %d tokens，扣费 %.2f 元", billedTokens, cost);
+            }
         }
     }
 

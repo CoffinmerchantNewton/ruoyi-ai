@@ -46,7 +46,8 @@ public class ChatModel extends BaseEntity {
     private String modelDescribe;
 
     /**
-     * 模型价格
+     * 模型价格（每1000个输出token的价格，单位：元）
+     * 注意：输入token价格按输出价格的1/4计算，即输入token数除以4后与输出token合并计费
      */
     private Double modelPrice;
 

@@ -345,10 +345,10 @@ public class SseServiceImpl implements ISseService {
     private String getDefaultSystemPrompt() {
         String sysPrompt = chatModelVo != null ? chatModelVo.getSystemPrompt() : null;
         if (StringUtils.isEmpty(sysPrompt)) {
-            sysPrompt = "你是一个由RuoYI-AI开发的人工智能助手，名字叫RuoYI人工智能助手。"
-                    + "你擅长中英文对话，能够理解并处理各种问题，提供安全、有帮助、准确的回答。"
-                    + "当前时间：" + DateUtils.getDate()
-                    + "#注意：回复之前注意结合上下文和工具返回内容进行回复。";
+            sysPrompt = "You are a helpful assistant."
+                    + "You are good at English and Chinese conversation, able to understand and process various questions, provide safe, helpful, and accurate answers."
+                    + "Current time: " + DateUtils.getDate()
+                    + "#Note: Before replying, pay attention to combine the context and tool return content.";
         }
         return sysPrompt;
     }

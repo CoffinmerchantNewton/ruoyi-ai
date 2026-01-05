@@ -6,6 +6,7 @@ import org.ruoyi.chat.service.chat.IChatCostService;
 import org.ruoyi.chat.service.chat.IChatService;
 import org.ruoyi.common.chat.entity.chat.Message;
 import org.ruoyi.common.chat.request.ChatRequest;
+import org.ruoyi.common.chat.utils.TikTokensUtil;
 import org.ruoyi.common.core.service.BaseContext;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -127,6 +128,26 @@ public class BillingChatServiceProxy implements IChatService {
             }
 
             try {
+                // 计算用户输入消息的token数（输入token）
+                int inputTokens = 0;
+                if (chatRequest.getMessages() != null && !chatRequest.getMessages().isEmpty()) {
+                    // 获取最后一条用户消息
+                    Message lastUserMessage = null;
+                    for (int i = chatRequest.getMessages().size() - 1; i >= 0; i--) {
+                        Message msg = chatRequest.getMessages().get(i);
+                        if (Message.Role.USER.getName().equals(msg.getRole())) {
+                            lastUserMessage = msg;
+                            break;
+                        }
+                    }
+                    if (lastUserMessage != null && lastUserMessage.getContent() != null) {
+                        // 计算用户消息的token数（包括系统提示词和上下文）
+                        // 计算整个messages列表的token数作为输入token
+                        inputTokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getMessages());
+                        log.debug("计算用户输入token数: {}", inputTokens);
+                    }
+                }
+
                 // 创建AI回复的ChatRequest
                 ChatRequest aiChatRequest = new ChatRequest();
                 aiChatRequest.setUserId(chatRequest.getUserId());
@@ -134,6 +155,8 @@ public class BillingChatServiceProxy implements IChatService {
                 aiChatRequest.setRole(Message.Role.ASSISTANT.getName());
                 aiChatRequest.setModel(chatRequest.getModel());
                 aiChatRequest.setPrompt(aiResponse);
+                // 设置用户输入token数，用于计费时计算
+                aiChatRequest.setInputTokens(inputTokens);
 
                 // 设置会话token供异步线程使用
                 if (chatRequest.getToken() != null) {
@@ -146,8 +169,8 @@ public class BillingChatServiceProxy implements IChatService {
                 // 发布计费事件
                 chatCostService.publishBillingEvent(aiChatRequest);
 
-                log.debug("AI回复保存和计费完成，用户ID: {}, 会话ID: {}, 回复长度: {}",
-                        chatRequest.getUserId(), chatRequest.getSessionId(), aiResponse.length());
+                log.debug("AI回复保存和计费完成，用户ID: {}, 会话ID: {}, 输入tokens: {}, 回复长度: {}",
+                        chatRequest.getUserId(), chatRequest.getSessionId(), inputTokens, aiResponse.length());
 
             } catch (Exception e) {
                 log.error("保存AI回复和计费失败，用户ID: {}, 会话ID: {}",
