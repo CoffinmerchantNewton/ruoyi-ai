@@ -7,9 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.ruoyi.graph.constants.GraphConstants;
 import org.ruoyi.graph.domain.GraphEdge;
 import org.ruoyi.graph.domain.GraphVertex;
+import org.ruoyi.graph.dto.EntityVO;
 import org.ruoyi.graph.dto.ExtractedEntity;
 import org.ruoyi.graph.dto.ExtractedRelation;
 import org.ruoyi.graph.dto.GraphExtractionResult;
+import org.ruoyi.graph.dto.GraphRetrieveResponse;
+import org.ruoyi.graph.dto.RelationVO;
 import org.ruoyi.graph.service.IGraphExtractionService;
 import org.ruoyi.graph.service.IGraphRAGService;
 import org.ruoyi.graph.service.IGraphStoreService;
@@ -241,6 +244,179 @@ public class GraphRAGServiceImpl implements IGraphRAGService {
         } catch (Exception e) {
             log.error("图谱检索失败", e);
             return "检索失败: " + e.getMessage();
+        }
+    }
+
+    @Override
+    public GraphRetrieveResponse retrieveFromGraphWithDetails(String query, String knowledgeId, int maxResults) {
+        log.info("从图谱检索相关内容（详细信息），查询: {}, 知识库ID: {}", query, knowledgeId);
+
+        try {
+            // 1. 从查询中抽取关键词（简单分词）
+            List<String> keywords = extractKeywords(query);
+            log.debug("提取的关键词: {}", keywords);
+
+            if (keywords.isEmpty()) {
+                return GraphRetrieveResponse.builder()
+                        .content("未能从查询中提取关键信息")
+                        .relevantEntities(new ArrayList<>())
+                        .relevantRelations(new ArrayList<>())
+                        .build();
+            }
+
+            // 2. 在图谱中搜索相关实体节点
+            List<GraphVertex> matchedNodes = new ArrayList<>();
+            for (String keyword : keywords) {
+                List<GraphVertex> nodes = graphStoreService.searchVerticesByName(
+                        keyword, knowledgeId, Math.min(5, maxResults)
+                );
+                matchedNodes.addAll(nodes);
+            }
+
+            if (matchedNodes.isEmpty()) {
+                return GraphRetrieveResponse.builder()
+                        .content("图谱中未找到相关实体")
+                        .relevantEntities(new ArrayList<>())
+                        .relevantRelations(new ArrayList<>())
+                        .build();
+            }
+
+            log.info("找到 {} 个匹配的实体节点", matchedNodes.size());
+
+            // 3. 去重（按nodeId）
+            Map<String, GraphVertex> uniqueNodes = new HashMap<>();
+            for (GraphVertex node : matchedNodes) {
+                uniqueNodes.putIfAbsent(node.getNodeId(), node);
+            }
+            matchedNodes = new ArrayList<>(uniqueNodes.values());
+
+            // 限制结果数量
+            if (matchedNodes.size() > maxResults) {
+                matchedNodes = matchedNodes.subList(0, maxResults);
+            }
+
+            // 4. 构建文本内容（重用原有逻辑）
+            StringBuilder contentBuilder = new StringBuilder();
+            contentBuilder.append("### 图谱检索结果\n\n");
+            contentBuilder.append(String.format("查询: %s\n", query));
+            contentBuilder.append(String.format("找到 %d 个相关实体:\n\n", matchedNodes.size()));
+
+            for (int i = 0; i < matchedNodes.size(); i++) {
+                GraphVertex node = matchedNodes.get(i);
+                contentBuilder.append(String.format("**%d. %s** (%s)\n", i + 1, node.getName(), node.getLabel()));
+
+                if (StrUtil.isNotBlank(node.getDescription())) {
+                    contentBuilder.append(String.format("   描述: %s\n", node.getDescription()));
+                }
+
+                // 获取邻居节点（1跳）
+                List<GraphVertex> neighbors = graphStoreService.getNeighbors(
+                        node.getNodeId(), knowledgeId, 5
+                );
+
+                if (!neighbors.isEmpty()) {
+                    contentBuilder.append("   关联实体: ");
+                    List<String> neighborNames = neighbors.stream()
+                            .map(GraphVertex::getName)
+                            .limit(5)
+                            .collect(java.util.stream.Collectors.toList());
+                    contentBuilder.append(String.join(", ", neighborNames));
+                    contentBuilder.append("\n");
+                }
+
+                contentBuilder.append("\n");
+            }
+
+            // 5. 添加统计信息
+            contentBuilder.append("---\n");
+            contentBuilder.append(String.format("总计: %d 个实体节点\n", matchedNodes.size()));
+
+            // 6. 转换为 EntityVO 列表
+            List<EntityVO> entityVOs = matchedNodes.stream()
+                    .map(node -> EntityVO.builder()
+                            .nodeId(node.getNodeId())
+                            .name(node.getName())
+                            .label(node.getLabel())
+                            .description(node.getDescription())
+                            .confidence(node.getConfidence())
+                            .build())
+                    .collect(java.util.stream.Collectors.toList());
+
+            // 7. 查询与这些节点相关的关系
+            List<RelationVO> relationVOs = queryRelationsByNodeIds(
+                    matchedNodes.stream().map(GraphVertex::getNodeId).collect(java.util.stream.Collectors.toList()),
+                    knowledgeId,
+                    maxResults * 2 // 关系数量可以稍多
+            );
+
+            return GraphRetrieveResponse.builder()
+                    .content(contentBuilder.toString())
+                    .relevantEntities(entityVOs)
+                    .relevantRelations(relationVOs)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("图谱检索失败", e);
+            return GraphRetrieveResponse.builder()
+                    .content("检索失败: " + e.getMessage())
+                    .relevantEntities(new ArrayList<>())
+                    .relevantRelations(new ArrayList<>())
+                    .build();
+        }
+    }
+
+    /**
+     * 根据节点ID列表查询关系
+     *
+     * @param nodeIds     节点ID列表
+     * @param knowledgeId 知识库ID
+     * @param limit       限制数量
+     * @return 关系列表
+     */
+    private List<RelationVO> queryRelationsByNodeIds(List<String> nodeIds, String knowledgeId, int limit) {
+        if (nodeIds == null || nodeIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        try {
+            // 查询知识库的所有关系，然后过滤出与匹配节点相关的
+            Set<String> nodeIdSet = new HashSet<>(nodeIds);
+            List<GraphEdge> allEdges = graphStoreService.queryEdgesByKnowledgeId(knowledgeId, limit * 5); // 查询更多以便过滤
+
+            Set<String> seenEdgeIds = new HashSet<>();
+            List<RelationVO> relationVOs = new ArrayList<>();
+
+            for (GraphEdge edge : allEdges) {
+                // 只保留与匹配节点相关的关系
+                if (!nodeIdSet.contains(edge.getSourceNodeId()) && !nodeIdSet.contains(edge.getTargetNodeId())) {
+                    continue;
+                }
+
+                // 去重
+                if (seenEdgeIds.contains(edge.getEdgeId())) {
+                    continue;
+                }
+                seenEdgeIds.add(edge.getEdgeId());
+
+                relationVOs.add(RelationVO.builder()
+                        .edgeId(edge.getEdgeId())
+                        .sourceNodeId(edge.getSourceNodeId())
+                        .targetNodeId(edge.getTargetNodeId())
+                        .label(edge.getLabel())
+                        .confidence(edge.getConfidence() != null ? edge.getConfidence() : 1.0)
+                        .build());
+
+                if (relationVOs.size() >= limit) {
+                    break;
+                }
+            }
+
+            log.debug("查询到 {} 个关系，节点数量: {}", relationVOs.size(), nodeIds.size());
+            return relationVOs;
+
+        } catch (Exception e) {
+            log.error("查询关系失败", e);
+            return new ArrayList<>();
         }
     }
 

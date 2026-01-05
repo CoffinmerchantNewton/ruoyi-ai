@@ -23,7 +23,7 @@ captcha:
 
 # 开发环境配置
 server:
-  # 服务器的HTTP端口，默认为8080
+  # 服务器的HTTP端口，默认为6039
   port: 6039
   servlet:
     # 应用的访问路径
@@ -249,9 +249,9 @@ springdoc:
     version: '版本号: ${ruoyi.version}'
     # 作者信息
     contact:
-      name: ageerle
-      email: ageerle@163.com
-      url: https://gitee.com/ageerle/ruoyi-ai
+      name: CoffinmerchantNewton
+      email: 1324651013@qq.com
+      url: https://github.com/CoffinmerchantNewton/ruoyi-ai
   components:
     # 鉴权方式配置
     security-schemes:
@@ -306,7 +306,7 @@ management:
   health:
     # 禁用 Neo4j 健康检查（当知识图谱功能未启用时）
     neo4j:
-      enabled: false
+      enabled: true
 
 # websocket
 # websocket
@@ -321,10 +321,10 @@ spring:
   ai:
     openai:
       api-key: sk-xx
-      base-url: https://api.pandarobot.chat/
+      base-url: https://api.siliconflow.cn/
     mcp:
       client:
-        enabled: false
+        enabled: true
         name: ruoyi-ai-mcp
         sse:
           connections:
@@ -352,19 +352,19 @@ vector-store:
 
 
 --- # Neo4j 知识图谱配置
-#neo4j:
-#  uri: bolt://117.72.192.162:7687
-#  username: neo4j
-#  password: MySecurePass123!
-#  database: neo4j
-#  max-connection-pool-size: 50
-#  connection-timeout-seconds: 30
+neo4j:
+  uri: bolt://127.0.0.1:7687
+  username: neo4j
+  password: your_password
+  database: neo4j
+  max-connection-pool-size: 50
+  connection-timeout-seconds: 30
 
 # 知识图谱配置
 knowledge:
   graph:
     # 是否启用知识图谱功能
-    enabled: false
+    enabled: true
     # 图数据库类型: neo4j 或 apache-age
     database-type: neo4j
     # 是否自动创建索引

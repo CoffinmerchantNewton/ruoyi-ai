@@ -16,8 +16,8 @@
 graphs, digital humans, and AI workflow orchestration*
 
 **[📖 中文文档](README.md)** | **[📚 Documentation](https://doc.pandarobot.chat)** | *
-*[🚀 Live Demo](https://web.pandarobot.chat)** | **[🐛 Report Bug](https://github.com/ageerle/ruoyi-ai/issues)** | *
-*[💡 Request Feature](https://github.com/ageerle/ruoyi-ai/issues)**
+*[🚀 Live Demo](https://web.pandarobot.chat)** | **[🐛 Report Bug](https://github.com/CoffinmerchantNewton/ruoyi-ai/issues)** | *
+*[💡 Request Feature](https://github.com/CoffinmerchantNewton/ruoyi-ai/issues)**
 
 </div>
 
@@ -72,17 +72,11 @@ graphs, digital humans, and AI workflow orchestration*
 
 ### Source Code
 
-| Component      | GitHub                                                | Gitee                                                | GitCode                                                |
-|----------------|-------------------------------------------------------|------------------------------------------------------|--------------------------------------------------------|
-| Backend API    | [ruoyi-ai](https://github.com/ageerle/ruoyi-ai)       | [ruoyi-ai](https://gitee.com/ageerle/ruoyi-ai)       | [ruoyi-ai](https://gitcode.com/ageerle/ruoyi-ai)       |
-| User Frontend  | [ruoyi-web](https://github.com/ageerle/ruoyi-web)     | [ruoyi-web](https://gitee.com/ageerle/ruoyi-web)     | [ruoyi-web](https://gitcode.com/ageerle/ruoyi-web)     |
-| Admin Frontend | [ruoyi-admin](https://github.com/ageerle/ruoyi-admin) | [ruoyi-admin](https://gitee.com/ageerle/ruoyi-admin) | [ruoyi-admin](https://gitcode.com/ageerle/ruoyi-admin) |
-
-### Collaborative Projects
-
-| Project Description |                           GitHub Repository                            |                         Gitee Repository                         |
-|:-------------------:|:----------------------------------------------------------------------:|:----------------------------------------------------------------:|
-| Simplified Frontend | [ruoyi-element-ai](https://github.com/element-plus-x/ruoyi-element-ai) | [ruoyi-element-ai](https://gitee.com/he-jiayue/ruoyi-element-ai) |
+|            Component |                               GitHub 仓库                                |
+|---------------------:|:----------------------------------------------------------------------:|
+|       🔧 Backend API |      [ruoyi-ai](https://github.com/CoffinmerchantNewton/ruoyi-ai)      |
+|     🎨 User Frontend | [ruoyi-web](https://github.com/CoffinmerchantNewton/ruoyi-element-ai ) |
+|  🛠️ Admin Frontend  |   [ruoyi-admin](https://github.com/CoffinmerchantNewton/ruoyi-admin)   |
 
 ## 🛠️ Tech Stack
 
@@ -136,64 +130,28 @@ Special thanks to these amazing open source projects:
 - [Vben Admin](https://github.com/vbenjs/vue-vben-admin) - Vue admin template
 - [chatgpt-java](https://github.com/Grt1228/chatgpt-java) - ChatGPT Java SDK
 
-## 🌐 Ecosystem Partners
-
-- [PPIO Cloud](https://ppinfra.com/user/register?invited_by=P8QTUY&utm_source=github_ruoyi-ai) - Cost-effective GPU
-  containers and model APIs
-
-## 💬 Community
-
-<div align="center">
-
-<table>
-<tr>
-<td align="center">
-<img src="image/wx.png" alt="WeChat" width="200" height="200"><br>
-<strong>Add Author WeChat</strong><br>
-<em>Scan to join learning group</em>
-</td>
-<td align="center">
-<img src="image/qq.png" alt="QQ Group" width="200" height="200"><br>
-<strong>QQ Group</strong><br>
-<em>Technical discussion</em>
-</td>
-</tr>
-</table>
-
-</div>
-
----
-
-<div align="center">
-
-**[⭐ Star this repo](https://github.com/ageerle/ruoyi-ai)** • **[🍴 Fork it](https://github.com/ageerle/ruoyi-ai/fork)
-** • **[📖 中文文档](README.md)** • **[📚 Documentation](https://doc.pandarobot.chat)**
-
-*Built with ❤️ by the RuoYi AI community*
-
-</div>
 
 <!-- Badge Links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/ageerle/ruoyi-ai.svg?style=flat-square
+[contributors-shield]: https://img.shields.io/github/contributors/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-[contributors-url]: https://github.com/ageerle/ruoyi-ai/graphs/contributors
+[contributors-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/graphs/contributors
 
-[forks-shield]: https://img.shields.io/github/forks/ageerle/ruoyi-ai.svg?style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-[forks-url]: https://github.com/ageerle/ruoyi-ai/network/members
+[forks-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/network/members
 
-[stars-shield]: https://img.shields.io/github/stars/ageerle/ruoyi-ai.svg?style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-[stars-url]: https://github.com/ageerle/ruoyi-ai/stargazers
+[stars-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/stargazers
 
-[issues-shield]: https://img.shields.io/github/issues/ageerle/ruoyi-ai.svg?style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-[issues-url]: https://github.com/ageerle/ruoyi-ai/issues
+[issues-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/issues
 
-[license-shield]: https://img.shields.io/github/license/ageerle/ruoyi-ai.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-[license-url]: https://github.com/ageerle/ruoyi-ai/blob/main/LICENSE
+[license-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/blob/main/LICENSE
 
 
 

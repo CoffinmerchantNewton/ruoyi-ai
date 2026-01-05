@@ -1,6 +1,7 @@
 package org.ruoyi.graph.service;
 
 import org.ruoyi.graph.dto.GraphExtractionResult;
+import org.ruoyi.graph.dto.GraphRetrieveResponse;
 
 import java.util.Map;
 
@@ -64,6 +65,16 @@ public interface IGraphRAGService {
      * @return 检索到的相关实体和关系
      */
     String retrieveFromGraph(String query, String knowledgeId, int maxResults);
+
+    /**
+     * 基于图谱检索相关内容（返回详细信息）
+     *
+     * @param query       查询文本
+     * @param knowledgeId 知识库ID
+     * @param maxResults  最大结果数
+     * @return 检索结果（包含文本内容和实体、关系列表）
+     */
+    GraphRetrieveResponse retrieveFromGraphWithDetails(String query, String knowledgeId, int maxResults);
 
     /**
      * 删除知识库的图谱数据

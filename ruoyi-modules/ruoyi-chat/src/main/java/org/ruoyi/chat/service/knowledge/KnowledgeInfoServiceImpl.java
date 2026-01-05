@@ -238,7 +238,7 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
             }
             baseMapper.insert(knowledgeInfo);
             if (knowledgeInfo != null) {
-                vectorStoreService.createSchema(String.valueOf(knowledgeInfo.getId()), bo.getEmbeddingModelName());
+                vectorStoreService.createSchema(String.valueOf(knowledgeInfo.getKid()), bo.getEmbeddingModelName());
             }
         } else {
             baseMapper.updateById(knowledgeInfo);

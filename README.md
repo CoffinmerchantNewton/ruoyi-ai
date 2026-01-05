@@ -23,8 +23,8 @@
 *开箱即用的智能AI平台，深度集成 FastGPT、扣子(Coze)、DIFY 等主流AI平台，提供先进的RAG技术、知识图谱、数字人和AI流程编排能力*
 
 **[🇺🇸 English](README_EN.md)** | **[📖 使用文档](https://doc.pandarobot.chat)** | *
-*[🚀 在线体验](https://web.pandarobot.chat)** | **[🐛 问题反馈](https://github.com/ageerle/ruoyi-ai/issues)** | *
-*[💡 功能建议](https://github.com/ageerle/ruoyi-ai/issues)**
+*[🚀 在线体验](https://web.pandarobot.chat)** | **[🐛 问题反馈](https://github.com/CoffinmerchantNewton/ruoyi-ai/issues)** | *
+*[💡 功能建议](https://github.com/CoffinmerchantNewton/ruoyi-ai/issues)**
 
 </div>
 
@@ -74,17 +74,11 @@
 
 ### 项目源码
 
-| 项目模块     | GitHub 仓库                                             | Gitee 仓库                                             | GitCode 仓库                                             |
-|----------|-------------------------------------------------------|------------------------------------------------------|--------------------------------------------------------|
-| 🔧 后端服务  | [ruoyi-ai](https://github.com/ageerle/ruoyi-ai)       | [ruoyi-ai](https://gitee.com/ageerle/ruoyi-ai)       | [ruoyi-ai](https://gitcode.com/ageerle/ruoyi-ai)       |
-| 🎨 用户前端  | [ruoyi-web](https://github.com/ageerle/ruoyi-web)     | [ruoyi-web](https://gitee.com/ageerle/ruoyi-web)     | [ruoyi-web](https://gitcode.com/ageerle/ruoyi-web)     |
-| 🛠️ 管理后台 | [ruoyi-admin](https://github.com/ageerle/ruoyi-admin) | [ruoyi-admin](https://gitee.com/ageerle/ruoyi-admin) | [ruoyi-admin](https://gitcode.com/ageerle/ruoyi-admin) |
-
-### 合作项目
-
-| 项目介绍  |                               GitHub 仓库                                |                             Gitee 仓库                             |
-|:-----:|:----------------------------------------------------------------------:|:----------------------------------------------------------------:|
-| 前端简化版 | [ruoyi-element-ai](https://github.com/element-plus-x/ruoyi-element-ai) | [ruoyi-element-ai](https://gitee.com/he-jiayue/ruoyi-element-ai) |
+|      项目模块 |                               GitHub 仓库                                |
+|----------:|:----------------------------------------------------------------------:|
+|   🔧 后端服务 |      [ruoyi-ai](https://github.com/CoffinmerchantNewton/ruoyi-ai)      |
+|   🎨 用户前端 | [ruoyi-web](https://github.com/CoffinmerchantNewton/ruoyi-element-ai ) |
+|  🛠️ 管理后台 |   [ruoyi-admin](https://github.com/CoffinmerchantNewton/ruoyi-admin)   |
 
 ## 🛠️ 技术架构
 
@@ -137,65 +131,22 @@
 - [Vben Admin](https://github.com/vbenjs/vue-vben-admin) - 现代化的 Vue 后台管理模板
 - [chatgpt-java](https://github.com/Grt1228/chatgpt-java) - 优秀的 ChatGPT Java SDK
 
-## 🌐 生态伙伴
+[contributors-shield]: https://img.shields.io/github/contributors/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-- [PPIO 派欧云](https://ppinfra.com/user/register?invited_by=P8QTUY&utm_source=github_ruoyi-ai) - 提供高性价比的 GPU
-  算力和模型 API 服务
-- [优云智算](https://www.compshare.cn/?ytag=GPU_YY-gh_ruoyi) - 万卡RTX40系GPU+海内外主流模型API服务，秒级响应，按量计费，新客免费用。
-- [胜算云](https://www.shengsuanyun.com/?from=CH_3WG71ZOS) - AI模型算力聚合超市云服务。
+[contributors-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/graphs/contributors
 
-## 💬 社区交流
+[forks-shield]: https://img.shields.io/github/forks/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-<div align="center">
+[forks-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/network/members
 
-<table>
-<tr>
-<td align="center">
-<img src="image/wx.png" alt="微信二维码" width="200" height="200"><br>
-<strong>扫码添加作者微信</strong><br>
-<em>邀请进群学习</em>
-</td>
-<td align="center">
-<img src="image/qq.png" alt="QQ群二维码" width="200" height="200"><br>
-<strong>QQ技术交流群</strong><br>
-<em>技术讨论</em>
-</td>
+[stars-shield]: https://img.shields.io/github/stars/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-</tr>
-</table>
+[stars-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/stargazers
 
-</div>
+[issues-shield]: https://img.shields.io/github/issues/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
----
+[issues-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/issues
 
-<div align="center">
+[license-shield]: https://img.shields.io/github/license/CoffinmerchantNewton/ruoyi-ai.svg?style=flat-square
 
-**[⭐ 点个Star支持一下](https://github.com/ageerle/ruoyi-ai)** • *
-*[🍴 Fork 开始贡献](https://github.com/ageerle/ruoyi-ai/fork)** • **[📚 English](README_EN.md)** • *
-*[📖 查看完整文档](https://doc.pandarobot.chat)**
-
-*用 ❤️ 打造，由 RuoYi AI 开源社区维护*
-
-</div>
-
-<!-- Badge Links -->
-
-[contributors-shield]: https://img.shields.io/github/contributors/ageerle/ruoyi-ai.svg?style=flat-square
-
-[contributors-url]: https://github.com/ageerle/ruoyi-ai/graphs/contributors
-
-[forks-shield]: https://img.shields.io/github/forks/ageerle/ruoyi-ai.svg?style=flat-square
-
-[forks-url]: https://github.com/ageerle/ruoyi-ai/network/members
-
-[stars-shield]: https://img.shields.io/github/stars/ageerle/ruoyi-ai.svg?style=flat-square
-
-[stars-url]: https://github.com/ageerle/ruoyi-ai/stargazers
-
-[issues-shield]: https://img.shields.io/github/issues/ageerle/ruoyi-ai.svg?style=flat-square
-
-[issues-url]: https://github.com/ageerle/ruoyi-ai/issues
-
-[license-shield]: https://img.shields.io/github/license/ageerle/ruoyi-ai.svg?style=flat-square
-
-[license-url]: https://github.com/ageerle/ruoyi-ai/blob/main/LICENSE
+[license-url]: https://github.com/CoffinmerchantNewton/ruoyi-ai/blob/main/LICENSE

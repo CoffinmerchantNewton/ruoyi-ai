@@ -306,6 +306,18 @@ public class OpenAiStreamClient {
      */
     public <T extends BaseChatCompletion> ChatCompletionResponse chatCompletion(T chatCompletion) {
         if (chatCompletion instanceof ChatCompletion) {
+            if (this.openAiApi == null) {
+                //如果以chat/completions结尾，去掉它
+                if (apiHost.endsWith("chat/completions")) {
+                    apiHost = apiHost.substring(0, apiHost.length() - "chat/completions".length());
+                }
+                    this.openAiApi = new Retrofit.Builder()
+                            .baseUrl(apiHost)
+                            .client(okHttpClient)
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .addConverterFactory(JacksonConverterFactory.create())
+                            .build().create(OpenAiApi.class);
+            }
             Single<ChatCompletionResponse> chatCompletionResponse = this.openAiApi.chatCompletion((ChatCompletion) chatCompletion);
             return chatCompletionResponse.blockingGet();
         }

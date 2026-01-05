@@ -8,6 +8,7 @@ import org.ruoyi.common.web.core.BaseController;
 import org.ruoyi.graph.domain.GraphEdge;
 import org.ruoyi.graph.domain.GraphVertex;
 import org.ruoyi.graph.dto.GraphExtractionResult;
+import org.ruoyi.graph.dto.GraphRetrieveResponse;
 import org.ruoyi.graph.service.IGraphExtractionService;
 import org.ruoyi.graph.service.IGraphRAGService;
 import org.ruoyi.graph.service.IGraphStoreService;
@@ -183,14 +184,21 @@ public class GraphQueryController extends BaseController {
      * 基于图谱检索
      */
     @Operation(summary = "图谱检索")
-    @GetMapping("/retrieve")
-    public R<String> retrieveFromGraph(
-            @RequestParam String query,
-            @RequestParam String knowledgeId,
-            @RequestParam(defaultValue = "10") Integer maxResults) {
-
+    @PostMapping("/retrieve")
+    public R<GraphRetrieveResponse> retrieveFromGraph(@RequestBody Map<String, Object> request) {
         try {
-            String result = graphRAGService.retrieveFromGraph(query, knowledgeId, maxResults);
+            String query = (String) request.get("query");
+            String knowledgeId = (String) request.get("knowledgeId");
+            Integer maxResults = (Integer) request.getOrDefault("maxResults", 10);
+
+            if (query == null || query.trim().isEmpty()) {
+                return R.fail("查询文本不能为空");
+            }
+            if (knowledgeId == null || knowledgeId.trim().isEmpty()) {
+                return R.fail("知识库ID不能为空");
+            }
+
+            GraphRetrieveResponse result = graphRAGService.retrieveFromGraphWithDetails(query, knowledgeId, maxResults);
             return R.ok(result);
         } catch (Exception e) {
             return R.fail("图谱检索失败: " + e.getMessage());
