@@ -75,4 +75,14 @@ public class SysDept extends TenantEntity {
      */
     private String ancestors;
 
+    /**
+     * 钉钉部门ID（用于组织同步映射）
+     */
+    private Integer dingtalkDeptId;
+
+    /**
+     * 钉钉父部门ID（用于组织同步映射）
+     */
+    private Integer dingtalkParentDeptId;
+
 }

@@ -160,6 +160,31 @@ security:
     - /actuator/**
     - /workflow/**
     - /admin/workflow/**
+
+# 钉钉配置
+dingtalk:
+  # 钉钉应用的 AppKey（AK）
+  app-key: ''
+  # 钉钉应用的 AppSecret（SK）
+  app-secret: ''
+  # 钉钉 API 地址（OAPI）
+  oapi-url: https://oapi.dingtalk.com
+  # 钉钉 API 地址（API）
+  api-url: https://oapi.dingtalk.com
+  sync:
+    # 是否启用钉钉组织架构同步（定时任务）
+    enabled: false
+    # 组织同步 cron（默认每天 00:10 执行）
+    org-cron: "0 10 0 * * ?"
+    # 钉钉根部门(1)挂载到本地哪个部门ID下（默认 100：初始化数据的公司根部门）
+    root-dept-id: 100
+    # 是否同步本地用户 dept_id（按 unionId 优先，其次手机号匹配）
+    sync-user-dept: true
+    # 是否同步更新用户基础信息（昵称/手机号/邮箱/头像），默认 false 避免覆盖本地修改
+    update-user-profile: false
+    # 本地不存在用户时是否自动创建（默认 false）
+    create-missing-users: false
+  
 # 多租户配置
 tenant:
   # 是否开启
