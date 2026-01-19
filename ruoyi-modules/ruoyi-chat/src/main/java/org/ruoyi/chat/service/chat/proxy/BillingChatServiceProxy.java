@@ -27,6 +27,13 @@ public class BillingChatServiceProxy implements IChatService {
 
     @Override
     public SseEmitter chat(ChatRequest chatRequest, SseEmitter emitter) {
+        // 前端可关闭落库：此时不做余额校验/计费/保存，仅透传大模型输出
+        if (Boolean.FALSE.equals(chatRequest.getSaveSession())) {
+            log.debug("saveSession=false，跳过余额校验与计费，直接调用模型。userId={}, model={}",
+                    chatRequest.getUserId(), chatRequest.getModel());
+            return delegate.chat(chatRequest, emitter);
+        }
+
         // 🔥 在AI回复开始前检查余额是否充足
         if (!chatCostService.checkBalanceSufficient(chatRequest)) {
             String errorMsg = "余额不足，无法使用AI服务，请充值后再试";
@@ -127,6 +134,12 @@ public class BillingChatServiceProxy implements IChatService {
                 return;
             }
 
+            // 双保险：如果上游关闭了落库，这里也不做任何保存/计费
+            if (Boolean.FALSE.equals(chatRequest.getSaveSession())) {
+                log.debug("saveSession=false，跳过AI回复保存与计费");
+                return;
+            }
+
             try {
                 // 计算用户输入消息的token数（输入token）
                 int inputTokens = 0;
@@ -155,6 +168,7 @@ public class BillingChatServiceProxy implements IChatService {
                 aiChatRequest.setRole(Message.Role.ASSISTANT.getName());
                 aiChatRequest.setModel(chatRequest.getModel());
                 aiChatRequest.setPrompt(aiResponse);
+                aiChatRequest.setSaveSession(chatRequest.getSaveSession());
                 // 设置用户输入token数，用于计费时计算
                 aiChatRequest.setInputTokens(inputTokens);
 

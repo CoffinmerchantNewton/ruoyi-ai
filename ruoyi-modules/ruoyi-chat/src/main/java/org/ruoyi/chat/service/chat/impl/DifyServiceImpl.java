@@ -66,10 +66,15 @@ public class DifyServiceImpl implements IChatService {
                 .responseMode(ResponseMode.STREAMING)
                 .build();
 
-        // 获取conversationId
-        ChatSessionVo sessionInfo = chatSessionService.queryById(chatRequest.getSessionId());
-        if (Objects.nonNull(sessionInfo) && StrUtil.isNotBlank(sessionInfo.getConversationId())) {
-            message.setConversationId(sessionInfo.getConversationId());
+        // 获取conversationId（saveSession=false 或 sessionId=null 时跳过）
+        ChatSessionVo sessionInfo;
+        if (Boolean.TRUE.equals(chatRequest.getSaveSession()) && chatRequest.getSessionId() != null) {
+            sessionInfo = chatSessionService.queryById(chatRequest.getSessionId());
+            if (Objects.nonNull(sessionInfo) && StrUtil.isNotBlank(sessionInfo.getConversationId())) {
+                message.setConversationId(sessionInfo.getConversationId());
+            }
+        } else {
+            sessionInfo = null;
         }
 
         // 获取模型返回的消息
@@ -93,7 +98,7 @@ public class DifyServiceImpl implements IChatService {
                     // 扣除费用
                     ChatRequest chatRequestResponse = new ChatRequest();
                     // 更新conversationId
-                    if (StrUtil.isBlank(sessionInfo.getConversationId())) {
+                    if (Objects.nonNull(sessionInfo) && StrUtil.isBlank(sessionInfo.getConversationId())) {
                         String conversationId = event.getConversationId();
                         sessionInfo.setConversationId(conversationId);
                         // 更新conversationId

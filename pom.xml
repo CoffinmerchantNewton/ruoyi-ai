@@ -395,7 +395,6 @@
         <module>ruoyi-modules-api</module>
         <module>ruoyi-admin</module>
         <module>ruoyi-extend</module>
-        <module>ruoyi-modules/ruoyi-prompt</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -324,7 +324,7 @@ spring:
       base-url: https://api.siliconflow.cn/
     mcp:
       client:
-        enabled: true
+        enabled: false
         name: ruoyi-ai-mcp
         sse:
           connections:

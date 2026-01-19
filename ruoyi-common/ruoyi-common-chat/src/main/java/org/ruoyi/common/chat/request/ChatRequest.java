@@ -59,6 +59,13 @@ public class ChatRequest {
     private Long sessionId;
 
     /**
+     * 是否保存会话/消息记录（前端可控）
+     * - true: 创建会话并保存消息（默认行为）
+     * - false: 不创建会话且不保存消息，仅调用大模型
+     */
+    private Boolean saveSession = Boolean.TRUE;
+
+    /**
      * 应用ID
      */
     private String appId;

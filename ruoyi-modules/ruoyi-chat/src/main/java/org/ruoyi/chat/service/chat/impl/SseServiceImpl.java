@@ -94,6 +94,8 @@ public class SseServiceImpl implements ISseService {
     public SseEmitter sseChat(ChatRequest chatRequest, HttpServletRequest request) {
         SseEmitter sseEmitter = new SseEmitter(0L);
         try {
+            // 默认保存会话/消息；前端可通过 saveSession=false 关闭落库
+            boolean shouldSaveSession = !Boolean.FALSE.equals(chatRequest.getSaveSession());
             // 记录当前会话令牌，供异步线程使用
             try {
                 chatRequest.setToken(StpUtil.getTokenValue());
@@ -110,18 +112,23 @@ public class SseServiceImpl implements ISseService {
                 // 设置用户id
                 chatRequest.setUserId(LoginHelper.getUserId());
 
-                // 设置会话id
-                if (chatRequest.getSessionId() == null) {
-                    ChatSessionBo chatSessionBo = new ChatSessionBo();
-                    chatSessionBo.setUserId(chatCostService.getUserId());
-                    chatSessionBo.setSessionTitle(getFirst10Characters(chatRequest.getPrompt()));
-                    chatSessionBo.setSessionContent(chatRequest.getPrompt());
-                    chatSessionService.insertByBo(chatSessionBo);
-                    chatRequest.setSessionId(chatSessionBo.getId());
-                }
+                if (shouldSaveSession) {
+                    // 设置会话id（未传则自动创建）
+                    if (chatRequest.getSessionId() == null) {
+                        ChatSessionBo chatSessionBo = new ChatSessionBo();
+                        chatSessionBo.setUserId(chatCostService.getUserId());
+                        chatSessionBo.setSessionTitle(getFirst10Characters(chatRequest.getPrompt()));
+                        chatSessionBo.setSessionContent(chatRequest.getPrompt());
+                        chatSessionService.insertByBo(chatSessionBo);
+                        chatRequest.setSessionId(chatSessionBo.getId());
+                    }
 
-                // 保存用户消息
-                chatCostService.saveMessage(chatRequest);
+                    // 保存用户消息
+                    chatCostService.saveMessage(chatRequest);
+                } else {
+                    // 关闭落库时，确保不创建会话也不保存消息
+                    log.debug("saveSession=false，跳过会话创建与消息保存，userId={}", chatRequest.getUserId());
+                }
             }
             // 自动选择模型并获取对应的聊天服务
             IChatService chatService = autoSelectModelAndGetService(chatRequest);
