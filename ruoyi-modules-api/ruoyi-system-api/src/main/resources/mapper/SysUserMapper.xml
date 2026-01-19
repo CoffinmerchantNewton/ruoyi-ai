@@ -9,6 +9,8 @@
         <id property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
         <result property="deptId" column="dept_id"/>
+        <result property="openId" column="open_id"/>
+        <result property="unionId" column="union_id"/>
         <association property="dept" column="dept_id" resultMap="deptResult"/>
         <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
     </resultMap>
@@ -24,6 +26,8 @@
     <sql id="selectUserVo">
         select u.user_id,
                u.tenant_id,
+               u.open_id,
+               u.union_id,
                u.user_balance,
                u.user_grade,
                u.dept_id,
@@ -163,6 +167,11 @@
     <select id="selectUserByOpenId" parameterType="String" resultMap="SysUserResult">
         <include refid="selectUserVo"/>
         where u.del_flag = '0' and u.open_id = #{openId}
+    </select>
+
+    <select id="selectUserByUnionId" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.union_id = #{unionId}
     </select>
 
     <select id="selectUserByPhonenumber" parameterType="String" resultMap="SysUserResult">

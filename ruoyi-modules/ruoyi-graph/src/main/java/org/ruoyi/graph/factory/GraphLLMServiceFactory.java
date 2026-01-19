@@ -33,8 +33,7 @@ public class GraphLLMServiceFactory implements ApplicationContextAware {
             if (service != null) {
                 String category = service.getCategory();
                 llmServiceMap.put(category, service);
-                log.info("注册图谱LLM服务: category={}, service={}",
-                        category, service.getClass().getSimpleName());
+//                log.info("注册图谱LLM服务: category={}, service={}", category, service.getClass().getSimpleName());
             }
         }
 

@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import com.jd.genie.util.ApplicationUtils;
+import org.springframework.core.env.Environment;
 
 /**
  * 启动程序
@@ -19,7 +21,8 @@ public class RuoYiAIApplication {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(RuoYiAIApplication.class);
         application.setApplicationStartup(new BufferingApplicationStartup(2048));
-        application.run(args);
+        Environment env = application.run(args).getEnvironment();
+        ApplicationUtils.logApplicationStartup(env);
         System.out.println("(♥◠‿◠)ﾉﾞ  RuoYiAI启动成功   ლ(´ڡ`ლ)ﾞ");
     }
 }

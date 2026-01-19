@@ -82,6 +82,14 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
     SysUserVo selectUserByOpenId(String OpenId);
 
     /**
+     * 通过UnionId查询用户
+     *
+     * @param unionId 钉钉 unionId
+     * @return 用户对象信息
+     */
+    SysUserVo selectUserByUnionId(String unionId);
+
+    /**
      * 通过手机号查询用户
      *
      * @param phonenumber 手机号

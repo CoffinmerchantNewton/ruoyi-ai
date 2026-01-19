@@ -60,6 +60,14 @@ public interface ISysUserService {
     SysUserVo selectUserByOpenId(String openId);
 
     /**
+     * 通过UnionId查询用户（钉钉）
+     *
+     * @param unionId 钉钉 unionId
+     * @return SysUserVo
+     */
+    SysUserVo selectUserByUnionId(String unionId);
+
+    /**
      * 通过手机号查询用户
      *
      * @param phonenumber 手机号

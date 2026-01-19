@@ -128,6 +128,16 @@ public class SysUserVo implements Serializable {
     private String domainName;
 
     /**
+     * 微信用户标识（openId）
+     */
+    private String openId;
+
+    /**
+     * 钉钉用户标识（unionId）
+     */
+    private String unionId;
+
+    /**
      * 角色对象
      */
     private List<SysRoleVo> roles;

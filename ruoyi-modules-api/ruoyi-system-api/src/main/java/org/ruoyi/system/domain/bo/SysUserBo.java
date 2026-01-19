@@ -126,6 +126,11 @@ public class SysUserBo extends BaseEntity {
     private String openId;
 
     /**
+     * 钉钉用户标识（unionId）
+     */
+    private String unionId;
+
+    /**
      * 用户等级
      */
     private String userGrade;

@@ -117,6 +117,8 @@ sa-token:
 security:
   # 排除路径
   excludes:
+    # 钉钉登录
+    - /dingtalk/login
     # 获取模型信息
     - /system/model/modelList
     # 支付回调

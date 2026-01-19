@@ -154,6 +154,17 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
         return baseMapper.selectUserByOpenId(openId);
     }
 
+    /**
+     * 通过UnionId查询用户（钉钉）
+     *
+     * @param unionId 钉钉 unionId
+     * @return 用户对象信息
+     */
+    @Override
+    public SysUserVo selectUserByUnionId(String unionId) {
+        return baseMapper.selectUserByUnionId(unionId);
+    }
+
 
     /**
      * 通过手机号查询用户

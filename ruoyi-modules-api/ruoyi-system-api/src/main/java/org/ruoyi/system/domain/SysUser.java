@@ -119,6 +119,11 @@ public class SysUser extends TenantEntity {
     private String openId;
 
     /**
+     * 钉钉用户标识（unionId）
+     */
+    private String unionId;
+
+    /**
      * 用户余额
      */
     private Double userBalance;
