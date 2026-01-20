@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import com.jd.genie.util.ApplicationUtils;
+import org.ruoyi.utils.ApplicationUtils;
 import org.springframework.core.env.Environment;
 
 /**

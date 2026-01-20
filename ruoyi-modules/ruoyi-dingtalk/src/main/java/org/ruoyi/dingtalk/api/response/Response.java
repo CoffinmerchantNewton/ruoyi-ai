@@ -34,12 +34,18 @@ public class Response<T> {
     }
 
     public Response(Response origin) {
+        if (origin == null) {
+            throw new IllegalArgumentException("origin response 不能为空");
+        }
         this.request_id = origin.request_id;
         this.errcode = origin.errcode;
         this.errmsg = origin.errmsg;
     }
 
     public Response(Response origin, T result) {
+        if (origin == null) {
+            throw new IllegalArgumentException("origin response 不能为空");
+        }
         this.request_id = origin.request_id;
         this.errcode = origin.errcode;
         this.errmsg = origin.errmsg;

@@ -62,7 +62,21 @@ public class HttpUtil {
 	 */
 	public static <T> Response<T> post(String url, String output, Type... types) {
 		JSONObject json = httpRequest(url, "POST", output);
-		return json.toJavaObject(new TypeReference<Response<T>>(types){});
+		if (json == null) {
+			logger.error("[HTTP] http请求返回空响应, url:{}, method:{}, output:{}", url, "POST", output);
+			throw new ServiceException("接口返回为空");
+		}
+		try {
+			if (types == null || types.length == 0) {
+				@SuppressWarnings("unchecked")
+				Response<T> resp = (Response<T>) json.toJavaObject(new TypeReference<Response<JSONObject>>() {});
+				return resp;
+			}
+			return json.toJavaObject(new TypeReference<Response<T>>(types){});
+		} catch (Exception e) {
+			logger.error("[HTTP] 解析响应失败, url:{}, response:{}", url, json.toJSONString(), e);
+			throw new ServiceException("解析接口响应失败");
+		}
 	}
 
 	public static JSONObject httpRequest(String request, String requestMethod, String output) {
