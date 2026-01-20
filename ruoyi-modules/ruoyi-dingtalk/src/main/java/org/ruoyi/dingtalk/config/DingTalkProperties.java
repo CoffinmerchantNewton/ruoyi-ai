@@ -37,6 +37,11 @@ public class DingTalkProperties {
      */
     private Sync sync = new Sync();
 
+    /**
+     * 钉钉登录相关配置
+     */
+    private Login login = new Login();
+
     @Data
     public static class Sync {
         /**
@@ -68,6 +73,14 @@ public class DingTalkProperties {
          * 本地不存在用户时是否自动创建（默认 false）
          */
         private boolean createMissingUsers = false;
+    }
+
+    @Data
+    public static class Login {
+        /**
+         * 系统中不存在绑定用户时，是否自动创建默认用户（默认 false：直接抛错）
+         */
+        private boolean createMissingUser = false;
     }
 
 }

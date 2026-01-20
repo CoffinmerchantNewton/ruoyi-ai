@@ -172,6 +172,9 @@ dingtalk:
   oapi-url: https://oapi.dingtalk.com
   # 钉钉 API 地址（API）
   api-url: https://oapi.dingtalk.com
+  login:
+    # 系统中不存在绑定用户时，是否自动创建默认用户（默认 false：直接抛错）
+    create-missing-user: false
   sync:
     # 是否启用钉钉组织架构同步（定时任务）
     enabled: false

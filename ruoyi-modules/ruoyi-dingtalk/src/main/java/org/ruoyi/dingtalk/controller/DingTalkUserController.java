@@ -26,13 +26,24 @@ public class DingTalkUserController {
     /**
      * 钉钉登录
      *
-     * @param unionId 钉钉 unionId
+     * @param unionId  钉钉 unionId（可选）
+     * @param authCode 钉钉扫码回调 code（可选）
      * @return 登录信息
      */
     @GetMapping("/login")
-    public R<LoginVo> login(@RequestParam String unionId) {
+    public R<LoginVo> login(
+        @RequestParam(required = false) String unionId,
+        @RequestParam(required = false) String authCode
+    ) {
         try {
-            LoginVo loginVo = loginService.dingTalkLogin(unionId);
+            LoginVo loginVo;
+            if (unionId != null && !unionId.isBlank()) {
+                loginVo = loginService.dingTalkLogin(unionId);
+            } else if (authCode != null && !authCode.isBlank()) {
+                loginVo = loginService.dingTalkLoginByAuthCode(authCode);
+            } else {
+                return R.fail("参数缺失：unionId 或 authCode 至少传一个");
+            }
             return R.ok(loginVo);
         } catch (Exception e) {
             log.error("钉钉登录失败", e);
