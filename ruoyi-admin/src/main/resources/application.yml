@@ -165,9 +165,9 @@ security:
 # 钉钉配置
 dingtalk:
   # 钉钉应用的 AppKey（AK）
-  app-key: 'dingngzc5sp9zjzchzzv'
+  app-key: ''
   # 钉钉应用的 AppSecret（SK）
-  app-secret: 'xyIXucN6OehpkiUxKCjUtQZNNnLLLnepOFP9IjxlPF3nm6SbDKWuD4f3BG5U1hol'
+  app-secret: ''
   # 钉钉 API 地址（OAPI）
   oapi-url: https://oapi.dingtalk.com
   # 钉钉 API 地址（API）

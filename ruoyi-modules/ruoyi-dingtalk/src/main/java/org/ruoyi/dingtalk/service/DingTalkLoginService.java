@@ -29,6 +29,12 @@ import org.ruoyi.system.domain.vo.SysUserVo;
 import org.ruoyi.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
 
+import com.dingtalk.api.DefaultDingTalkClient;
+import com.dingtalk.api.DingTalkClient;
+import com.dingtalk.api.request.OapiV2UserGetuserinfoRequest;
+import com.dingtalk.api.response.OapiV2UserGetuserinfoResponse;
+import com.taobao.api.ApiException;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
@@ -162,6 +168,110 @@ public class DingTalkLoginService {
     public LoginVo dingTalkLoginByAuthCode(String authCode) {
         String unionId = getUnionIdByAuthCode(authCode);
         return dingTalkLogin(unionId);
+    }
+
+    /**
+     * 钉钉企业内部应用SSO登录（使用 dingtalk-jsapi）
+     *
+     * <p>前端通过 dingtalk-jsapi 的 dd.requestAuthCode 获取授权码后调用此接口。</p>
+     * <p>注意：clientId 和 clientSecret 复用 appKey 和 appSecret。</p>
+     *
+     * @param code   钉钉授权码
+     * @param corpId 企业ID
+     * @return 登录信息
+     */
+    public LoginVo dingTalkLoginByCode(String code, String corpId) {
+        if (code == null || code.trim().isEmpty()) {
+            throw new RuntimeException("code 不能为空");
+        }
+        if (corpId == null || corpId.trim().isEmpty()) {
+            throw new RuntimeException("corpId 不能为空");
+        }
+
+        // 复用 appKey 和 appSecret 作为 clientId 和 clientSecret
+        String clientId = dingTalkProperties.getAppKey();
+        String clientSecret = dingTalkProperties.getAppSecret();
+        if (clientId == null || clientId.isBlank() || clientSecret == null || clientSecret.isBlank()) {
+            throw new RuntimeException("钉钉应用配置缺失：appKey 或 appSecret 未配置");
+        }
+
+        try {
+            // 获取 AccessToken
+            String accessToken = getAccessToken(clientId, clientSecret);
+            if (accessToken == null) {
+                throw new RuntimeException("获取钉钉 AccessToken 失败");
+            }
+
+            // 获取用户信息
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/user/getuserinfo");
+            OapiV2UserGetuserinfoRequest req = new OapiV2UserGetuserinfoRequest();
+            req.setCode(code);
+
+            OapiV2UserGetuserinfoResponse rsp = client.execute(req, accessToken);
+            if (!rsp.isSuccess()) {
+                log.error("获取用户信息失败: {}", rsp.getErrmsg());
+                throw new RuntimeException("获取用户信息失败: " + rsp.getErrmsg());
+            }
+
+            // 从响应中提取 unionId
+            com.dingtalk.api.response.OapiV2UserGetuserinfoResponse.UserGetByCodeResponse userInfo = rsp.getResult();
+            if (userInfo == null) {
+                throw new RuntimeException("钉钉返回用户信息为空");
+            }
+
+            String unionId = userInfo.getUnionid();
+            if (unionId == null || unionId.isBlank()) {
+                throw new RuntimeException("钉钉返回缺少 unionid");
+            }
+
+            log.info("成功获取用户信息，unionId: {}", unionId);
+            // 使用 unionId 完成登录
+            return dingTalkLogin(unionId);
+        } catch (ApiException e) {
+            log.error("钉钉企业内部应用SSO登录失败: {}", e.getMessage(), e);
+            throw new RuntimeException("钉钉企业内部应用SSO登录失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 使用 clientId 和 clientSecret 获取 AccessToken（企业内部应用）
+     *
+     * @param clientId     客户端ID
+     * @param clientSecret 客户端密钥
+     * @return AccessToken
+     */
+    private String getAccessToken(String clientId, String clientSecret) {
+        try {
+            String url = "https://api.dingtalk.com/v1.0/oauth2/accessToken";
+            JSONObject body = new JSONObject();
+            body.put("appKey", clientId);
+            body.put("appSecret", clientSecret);
+
+            JSONObject response = HttpUtil.httpRequest(url, "POST", body.toJSONString());
+            if (response == null) {
+                log.error("获取 AccessToken 失败：响应为空");
+                return null;
+            }
+
+            // 检查是否有错误
+            Object code = response.get("code");
+            if (code != null && !"0".equals(code.toString())) {
+                String message = response.getString("message");
+                log.error("获取 AccessToken 失败: code={}, message={}", code, message);
+                return null;
+            }
+
+            // 获取 accessToken
+            String accessToken = response.getString("accessToken");
+            if (accessToken == null || accessToken.trim().isEmpty()) {
+                log.error("AccessToken 为空");
+                return null;
+            }
+            return accessToken;
+        } catch (Exception e) {
+            log.error("获取 AccessToken 异常: {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     /**
